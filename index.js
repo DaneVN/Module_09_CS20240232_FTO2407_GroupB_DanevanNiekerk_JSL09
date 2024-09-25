@@ -1,5 +1,5 @@
-//Background API
-fetch("https://apis.scccccrimba.com/unsplash/photos/random?orientation=landscape&query=nature")
+//BACKGROUND API
+fetch("https://apis.scrimba.com/unsplash/photos/random?orientation=landscape&query=nature")
     //promise is resolved
     .then(res => res.json())
     .then(data => {
@@ -15,8 +15,9 @@ fetch("https://apis.scccccrimba.com/unsplash/photos/random?orientation=landscape
     })
 
 
-//Crypto Currency API
+//CRYPTO CURRENCY API
 fetch("https://api.coingecko.com/api/v3/coins/dogecoin")
+    //promise is resolved
     .then(res => {
         if (!res.ok) {
             throw Error("Something went wrong")
@@ -30,7 +31,6 @@ fetch("https://api.coingecko.com/api/v3/coins/dogecoin")
             <span>${data.name}</span>
         `
         //crypto content
-        
         document.getElementById("crypto").innerHTML += `
             <p>🎯: R${data.market_data.current_price.zar}</p>
             <p>👆: R${data.market_data.high_24h.zar}</p>
@@ -41,3 +41,31 @@ fetch("https://api.coingecko.com/api/v3/coins/dogecoin")
     .catch(err => console.error(err))
 
     
+//TIME
+function getCurrentTime() {
+    const date = new Date()
+    document.getElementById("time").textContent = date.toLocaleTimeString("en-us", {timeStyle: "short"})
+}
+setInterval(getCurrentTime, 1000) //Live update
+
+//WEATHER
+
+navigator.geolocation.getCurrentPosition(position => {
+    fetch(`https://apis.scrimba.com/openweathermap/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&units=imperial`)
+        .then(res => {
+            if (!res.ok) {
+                throw Error("Weather data not available")
+            }
+            return res.json()
+        })
+        .then(data => {
+            const iconUrl = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
+            document.getElementById("weather").innerHTML = `
+                <img src=${iconUrl} />
+                <p class="weather-temp">${Math.round(data.main.temp)}º</p>
+                <p class="weather-city">${data.name}</p>
+            `
+        })
+        .catch(err => console.error(err))
+});
+
